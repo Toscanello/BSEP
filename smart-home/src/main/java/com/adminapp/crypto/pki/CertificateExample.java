@@ -1,11 +1,11 @@
-package pki;
+package com.adminapp.crypto.pki;
 
+import com.adminapp.crypto.pki.data.IssuerData;
+import com.adminapp.crypto.pki.data.SubjectData;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import pki.certificates.CertificateGenerator;
-import pki.data.IssuerData;
-import pki.data.SubjectData;
+import com.adminapp.crypto.pki.certificates.CertificateGenerator;
 
 import java.security.*;
 import java.security.cert.CertificateException;

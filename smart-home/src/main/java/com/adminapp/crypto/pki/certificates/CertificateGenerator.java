@@ -1,13 +1,13 @@
-package pki.certificates;
+package com.adminapp.crypto.pki.certificates;
 
+import com.adminapp.crypto.pki.data.IssuerData;
+import com.adminapp.crypto.pki.data.SubjectData;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
-import pki.data.IssuerData;
-import pki.data.SubjectData;
 
 import java.math.BigInteger;
 import java.security.cert.CertificateException;

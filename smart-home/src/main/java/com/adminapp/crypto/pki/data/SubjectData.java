@@ -1,4 +1,4 @@
-package pki.data;
+package com.adminapp.crypto.pki.data;
 
 import java.security.PublicKey;
 import java.util.Date;
