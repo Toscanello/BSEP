@@ -4,10 +4,13 @@ import com.adminapp.crypto.pki.certificates.CertificateGenerator;
 import com.adminapp.crypto.pki.data.IssuerData;
 import com.adminapp.crypto.pki.data.SubjectData;
 import com.adminapp.crypto.pki.keystores.KeyStoreWriter;
+import com.adminapp.domain.Certificate;
 import com.adminapp.dto.RootDTO;
 import com.adminapp.models.Csr;
 import com.adminapp.models.dto.IssuerDataDTO;
+import com.adminapp.repository.CertificateRepository;
 import com.adminapp.services.ICertificateService;
+import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +22,15 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CertificateService implements ICertificateService {
 
-    @Autowired
-    private CSRService csrService;
+    private final CSRService csrService;
+
+    private final CertificateRepository certificateRepository;
 
     @Override
     public X509Certificate issueCertificate(SubjectData subjectData, IssuerData issuerData) {
@@ -34,6 +40,7 @@ public class CertificateService implements ICertificateService {
         writer.loadKeyStore(null,"password".toCharArray());
         writer.write("neki email",issuerData.getPrivateKey(),"password".toCharArray(),certificate);
         writer.saveKeyStore("keystore","password".toCharArray());
+
         return certificate;
     }
 
@@ -71,6 +78,17 @@ public class CertificateService implements ICertificateService {
         subjectBuilder.addRDN(BCStyle.C, csr.getCountry());
         subjectBuilder.addRDN(BCStyle.EmailAddress, csr.getEmail());
 
+        Certificate certificate = new Certificate();
+        certificate.setSerialNumber(Long.parseLong(issuerDataDTO.getSerialNumber()));
+        certificate.setAlias(csr.getEmail());
+        certificate.setRevoked(false);
+        certificate.setCommonName(issuerDataDTO.getCommonName());
+        certificate.setDateUntil(issuerDataDTO.getEndDate());
+        certificate.setDateFrom(issuerDataDTO.getStartDate());
+        certificate.setIsCA(false);
+        certificate.setParentCertificate(certificateRepository.findCA());
+        certificateRepository.save(certificate);
+
         return issueCertificate(new SubjectData(keyPair1.getPublic(), subjectBuilder.build(), issuerDataDTO.getSerialNumber(), issuerDataDTO.getStartDate(), issuerDataDTO.getEndDate()),
                 new IssuerData(keyPair2.getPrivate(), issuerBuilder.build()));
     }
@@ -94,5 +112,25 @@ public class CertificateService implements ICertificateService {
         return null;
     }
 
+    public boolean revokeCertificate(Long id) {
+        Certificate certificate = certificateRepository.findBySerialNumber(id).get();
 
+        if(certificate.getRevoked()) {
+            return false;
+        }
+
+        certificate.setRevoked(true);
+        certificateRepository.save(certificate);
+
+        if(certificate.getIsCA()) {
+            revokeCertificatesOfCA(certificate.getId());
+        }
+
+        return true;
+    }
+
+    private void revokeCertificatesOfCA(Long id) {
+        List<Certificate> certificatesOfIssuer = certificateRepository.findByIssuer(id);
+        certificatesOfIssuer.forEach(e -> revokeCertificate(e.getSerialNumber()));
+    }
 }

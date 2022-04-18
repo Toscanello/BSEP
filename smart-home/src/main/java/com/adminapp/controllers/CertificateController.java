@@ -18,10 +18,10 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 @RestController
-@RequestMapping(value = "certificates")
+    @RequestMapping(value = "certificates")
 public class CertificateController {
     @Autowired
-    public ICertificateService service;
+    public ICertificateService certificateService;
 
     @PostMapping(path = "/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> issueCertificate(@RequestBody CertificateDTO certificateDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
@@ -42,14 +42,23 @@ public class CertificateController {
         builder.addRDN(BCStyle.OU, "Admin");
         builder.addRDN(BCStyle.L, "Novi Sad");
         builder.addRDN(BCStyle.C, "RS");
-        service.issueCertificate(new SubjectData(keyPair1.getPublic(),builder.build(),"12345678945",new Date(),new Date()),
+        certificateService.issueCertificate(new SubjectData(keyPair1.getPublic(),builder.build(),"12345678945",new Date(),new Date()),
                 new IssuerData(keyPair2.getPrivate(),builder.build()));
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping("/create/{csrId}")
     public ResponseEntity<X509Certificate> createCertificate(@PathVariable Long csrId, @RequestBody IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
-        return new ResponseEntity<>(service.createCertificate(csrId, issuerDataDTO), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.createCertificate(csrId, issuerDataDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("/revoke/{id}")
+    public ResponseEntity<Boolean> revokeCertificate(@PathVariable("id") Long id){
+        if(certificateService.revokeCertificate(id)) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
