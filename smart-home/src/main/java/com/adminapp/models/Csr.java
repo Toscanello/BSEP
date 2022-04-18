@@ -12,13 +12,18 @@ public class Csr {
     private Long id;
 
     private String commonName;
-    private String surname;
-    private String givenName;
     private String organizationName;
     private String organizationUnit;
+    private String city;
+    private String state;
     private String country;
     private String email;
 
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "bytea")
     private byte[] certificate;
+
+    @Override
+    public String toString() {
+        return "CN=" + commonName + ",O=" + organizationName + ",OU=" + organizationUnit + ",L=" + city + ",ST=" + state + ",C=" + country + ",EMAIL=" + email;
+    }
 }

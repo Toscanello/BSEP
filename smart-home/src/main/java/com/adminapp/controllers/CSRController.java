@@ -3,6 +3,7 @@ package com.adminapp.controllers;
 import com.adminapp.models.Csr;
 import com.adminapp.models.dto.CsrDTO;
 import com.adminapp.services.ICSRService;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,9 @@ public class CSRController {
     public ICSRService service;
 
     @PostMapping
-    public ResponseEntity<?> createCSR(@RequestBody CsrDTO csrDTO) throws IOException {
-        service.createCSR(csrDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> createCSR(@RequestBody CsrDTO csrDTO) throws IOException, OperatorCreationException {
+        String res = service.createCSR(csrDTO);
+        return new ResponseEntity<String>(res, HttpStatus.OK);
     }
 
     @GetMapping
