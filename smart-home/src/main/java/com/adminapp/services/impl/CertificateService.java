@@ -112,8 +112,8 @@ public class CertificateService implements ICertificateService {
         return null;
     }
 
-    public boolean revokeCertificate(Long id) {
-        Certificate certificate = certificateRepository.findBySerialNumber(id).get();
+    public boolean revokeCertificate(Long serialNumber) {
+        Certificate certificate = certificateRepository.findBySerialNumber(serialNumber).get();
 
         if(certificate.getRevoked()) {
             return false;
@@ -123,7 +123,7 @@ public class CertificateService implements ICertificateService {
         certificateRepository.save(certificate);
 
         if(certificate.getIsCA()) {
-            revokeCertificatesOfCA(certificate.getId());
+            revokeCertificatesOfCA(certificate.getSerialNumber());
         }
 
         return true;

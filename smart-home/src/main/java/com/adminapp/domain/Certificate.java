@@ -10,11 +10,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity
-public class Certificate {
+public class Certificate implements Serializable {
     @Id
     @GeneratedValue
     private Long id;

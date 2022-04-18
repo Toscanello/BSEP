@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
     Optional<Certificate> findBySerialNumber(Long serialNumber);
 
-    @Query("select c from Certificate c join fetch c.parentCertificate cp where cp.id = :id")
-    List<Certificate> findByIssuer(Long id);
+    @Query("select c from Certificate c join fetch c.parentCertificate cp where cp.serialNumber = :parentCertificate")
+    List<Certificate> findByIssuer(Long parentCertificate);
 
     @Query("select c from Certificate c where c.isCA = true")
     Certificate findCA();
