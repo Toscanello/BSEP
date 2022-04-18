@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "certificates")
 public class CertificateController {
 
-    @PostMapping("")
-    public ResponseEntity<Void> issueCertificate() {
-
-    }
+//    @PostMapping("")
+//    public ResponseEntity<Void> issueCertificate() {
+//
+//    }
 
 }
