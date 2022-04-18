@@ -65,5 +65,9 @@ public class CertificateController {
     public ResponseEntity<List<X509Certificate>> findAllCertificates(){
         return new ResponseEntity<>(certificateService.getAllCertificates(),HttpStatus.OK);
     }
+    @GetMapping("/validate/{alias}")
+    public ResponseEntity<Boolean> validate(@PathVariable String alias){
+        return new ResponseEntity<>(certificateService.validateCert(alias),HttpStatus.OK);
+    }
 
 }

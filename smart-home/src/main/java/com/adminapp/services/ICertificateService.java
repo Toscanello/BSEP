@@ -18,4 +18,5 @@ public interface ICertificateService {
     X509Certificate createCertificate(Long csrId, IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException;
     boolean revokeCertificate(Long id);
     List<X509Certificate> getAllCertificates();
+    boolean validateCert(String alias);
 }

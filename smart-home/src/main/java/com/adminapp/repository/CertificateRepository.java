@@ -15,6 +15,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     @Query("select c from Certificate c join fetch c.parentCertificate cp where cp.serialNumber = :parentCertificate")
     List<Certificate> findByIssuer(Long parentCertificate);
 
+    Optional<Certificate> findOneByAlias(String alias);
+
     @Query("select c from Certificate c where c.isCA = true")
     Certificate findCA();
 }

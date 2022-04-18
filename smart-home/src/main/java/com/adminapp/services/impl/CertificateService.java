@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,5 +148,22 @@ public class CertificateService implements ICertificateService {
              certificatesToReturn.add((X509Certificate) keyStoreReader.readCertificate("keystore.jks","password",c.getAlias()));
          }
          return certificatesToReturn;
+    }
+
+    @Override
+    public boolean validateCert(String alias) {
+        KeyStoreReader keyStoreReader = new KeyStoreReader();
+        X509Certificate certificate = (X509Certificate) keyStoreReader.readCertificate("keystore.jks","password",alias);
+        try {
+            certificate.checkValidity();
+        } catch (CertificateNotYetValidException | CertificateExpiredException e) {
+            return false;
+        }
+        Certificate certificate1 = certificateRepository.findOneByAlias(alias).orElse(null);
+
+        if(certificate1 != null)
+            if(certificate1.getRevoked())
+                return false;
+        return true;
     }
 }
