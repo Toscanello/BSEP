@@ -32,4 +32,11 @@ public class IssuerData {
         this.privateKey = privateKey;
     }
 
+    @Override
+    public String toString() {
+        return "IssuerData{" +
+                "x500name=" + x500name +
+                ", privateKey=" + privateKey +
+                '}';
+    }
 }

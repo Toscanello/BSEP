@@ -62,4 +62,15 @@ public class SubjectData {
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
+
+    @Override
+    public String toString() {
+        return "SubjectData{" +
+                "publicKey=" + publicKey +
+                ", x500name=" + x500name +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }

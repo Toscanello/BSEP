@@ -63,6 +63,7 @@ public class CSRService implements ICSRService {
         csrDb.setState(csrDTO.getState());
         csrDb.setCountry(csrDTO.getCountry());
         csrDb.setEmail(csrDTO.getEmail());
+        csrDb.setCertificate(csr.getEncoded());
 
         csrRepository.save(csrDb);
 
