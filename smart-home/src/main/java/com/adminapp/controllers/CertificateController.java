@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.List;
 
 @RestController
     @RequestMapping(value = "certificates")
@@ -59,6 +60,10 @@ public class CertificateController {
         } else {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @GetMapping("/findAll")
+    public ResponseEntity<List<X509Certificate>> findAllCertificates(){
+        return new ResponseEntity<>(certificateService.getAllCertificates(),HttpStatus.OK);
     }
 
 }

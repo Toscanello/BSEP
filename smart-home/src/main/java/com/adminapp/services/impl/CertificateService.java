@@ -3,6 +3,7 @@ package com.adminapp.services.impl;
 import com.adminapp.crypto.pki.certificates.CertificateGenerator;
 import com.adminapp.crypto.pki.data.IssuerData;
 import com.adminapp.crypto.pki.data.SubjectData;
+import com.adminapp.crypto.pki.keystores.KeyStoreReader;
 import com.adminapp.crypto.pki.keystores.KeyStoreWriter;
 import com.adminapp.domain.Certificate;
 import com.adminapp.dto.RootDTO;
@@ -13,6 +14,7 @@ import com.adminapp.services.ICertificateService;
 import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,9 +40,10 @@ public class CertificateService implements ICertificateService {
         X509Certificate certificate = CertificateGenerator.generateCertificate(subjectData, issuerData);
         System.out.println(certificate.toString());
         KeyStoreWriter writer = new KeyStoreWriter();
-        writer.loadKeyStore(null,"password".toCharArray());
-        writer.write("neki email",issuerData.getPrivateKey(),"password".toCharArray(),certificate);
-        writer.saveKeyStore("keystore","password".toCharArray());
+        writer.loadKeyStore("keystore.jks","password".toCharArray());
+        writer.write(IETFUtils.valueToString(subjectData.getX500name().getRDNs(BCStyle.EmailAddress)[0].getFirst().getValue()),
+                issuerData.getPrivateKey(),"password".toCharArray(),certificate);
+        writer.saveKeyStore("keystore.jks","password".toCharArray());
 
         return certificate;
     }
@@ -132,5 +136,15 @@ public class CertificateService implements ICertificateService {
     private void revokeCertificatesOfCA(Long id) {
         List<Certificate> certificatesOfIssuer = certificateRepository.findByIssuer(id);
         certificatesOfIssuer.forEach(e -> revokeCertificate(e.getSerialNumber()));
+    }
+
+    public ArrayList<X509Certificate> getAllCertificates(){
+         ArrayList<Certificate> certificates = (ArrayList<Certificate>) certificateRepository.findAll();
+         ArrayList<X509Certificate> certificatesToReturn = new ArrayList<>();
+        KeyStoreReader keyStoreReader = new KeyStoreReader();
+         for(Certificate c: certificates){
+             certificatesToReturn.add((X509Certificate) keyStoreReader.readCertificate("keystore.jks","password",c.getAlias()));
+         }
+         return certificatesToReturn;
     }
 }
