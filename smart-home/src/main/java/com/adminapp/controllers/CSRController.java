@@ -1,13 +1,15 @@
 package com.adminapp.controllers;
 
+import com.adminapp.models.Csr;
+import com.adminapp.models.dto.CsrDTO;
 import com.adminapp.services.ICSRService;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "csr")
@@ -16,10 +18,25 @@ public class CSRController {
     @Autowired
     public ICSRService service;
 
-    @PostMapping("")
-    public ResponseEntity createCSR(@RequestBody byte[] csr) {
-        service.createCSR(csr);
-        return new ResponseEntity(HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<?> createCSR(@RequestBody CsrDTO csrDTO) throws IOException, OperatorCreationException {
+        String res = service.createCSR(csrDTO);
+        return new ResponseEntity<String>(res, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllCsrs() {
+        return new ResponseEntity<>(service.getAll().stream().map(csr -> new CsrDTO(csr)), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCsr(@PathVariable Long id) {
+        Csr csr = service.get(id);
+        if (csr == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(new CsrDTO(csr), HttpStatus.OK);
+        }
     }
 
 }
