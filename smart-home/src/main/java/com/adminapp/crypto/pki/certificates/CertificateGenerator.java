@@ -18,7 +18,7 @@ public class CertificateGenerator {
     public CertificateGenerator() {
     }
 
-    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData) {
+    public static X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData) {
         try {
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
