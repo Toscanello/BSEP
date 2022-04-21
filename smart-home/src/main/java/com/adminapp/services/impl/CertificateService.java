@@ -144,9 +144,9 @@ public class CertificateService implements ICertificateService {
          ArrayList<Certificate> certificates = (ArrayList<Certificate>) certificateRepository.findAll();
          ArrayList<X509Certificate> certificatesToReturn = new ArrayList<>();
         KeyStoreReader keyStoreReader = new KeyStoreReader();
-         for(Certificate c: certificates){
-             certificatesToReturn.add((X509Certificate) keyStoreReader.readCertificate("keystore.jks","password",c.getAlias()));
-         }
+         for(Certificate c: certificates)
+             if(!c.getRevoked())
+                certificatesToReturn.add((X509Certificate) keyStoreReader.readCertificate("keystore.jks","password",c.getAlias()));
          return certificatesToReturn;
     }
 
