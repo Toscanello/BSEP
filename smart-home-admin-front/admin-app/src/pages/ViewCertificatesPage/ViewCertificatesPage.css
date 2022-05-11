@@ -1,0 +1,27 @@
+.certificates-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.certificates-table td,
+.certificates-table th {
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+.certificates-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.certificates-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4c6daf;
+  color: white;
+  text-align: center;
+}
+
+.container-table {
+  overflow-x: auto;
+}
