@@ -17,6 +17,9 @@ const HomePage = () => {
         <Link to="/certificates" className="btn">
           View Certificates
         </Link>
+        <Link to="/users" className="btn">
+          Users
+        </Link>
       </div>
     </div>
   );
