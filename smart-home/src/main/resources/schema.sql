@@ -1,0 +1,1 @@
+INSERT INTO users(username, password, name, surname, type) values ('admin1', '123', 'marko', 'suljak', 'ADMIN')
