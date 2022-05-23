@@ -1,4 +1,4 @@
-package auth;
+package com.adminapp.auth;
 
 import com.adminapp.services.impl.UserAuthService;
 import org.apache.commons.logging.Log;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-import utils.TokenUtils;
+import com.adminapp.utils.TokenUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

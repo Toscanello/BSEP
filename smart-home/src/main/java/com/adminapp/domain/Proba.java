@@ -1,11 +1,12 @@
 package com.adminapp.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.lang.annotation.Target;
 
 @Entity
 @Table(name = "proba")
-public class Proba{
+public class Proba implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

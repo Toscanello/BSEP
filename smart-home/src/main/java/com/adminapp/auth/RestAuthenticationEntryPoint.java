@@ -1,4 +1,4 @@
-package auth;
+package com.adminapp.auth;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

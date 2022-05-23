@@ -1,2 +1,2 @@
---insert into users (created_at, active,username,password, name, surname, role) values (1634248800000, 'true','admin','123','ivan', 'luburic', 'ROLE_ADMIN');
-insert into proba (pokusaj) values ('idemo');
+INSERT INTO users(username, password, name, surname, role) values
+('user123', '$2a$12$UivASGsTDUvaymJUGSKcOOfEjIh4KyqLNE8rs/24jb55r8Ma1AfX2', 'marko', 'suljak', 'ROLE_ADMIN');

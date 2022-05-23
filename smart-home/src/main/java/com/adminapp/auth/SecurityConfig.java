@@ -1,4 +1,4 @@
-package auth;
+package com.adminapp.auth;
 
 import com.adminapp.services.impl.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +14,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import utils.TokenUtils;
+import com.adminapp.utils.TokenUtils;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserAuthService userAuthService;
+    @Autowired
+    private UserAuthService userAuthService;
 
+    @Autowired
     private TokenUtils tokenUtils;
 
+    @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
+    public SecurityConfig() {}
     public SecurityConfig(UserAuthService userAuthService,
                           TokenUtils tokenUtils,
                           RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
@@ -46,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    @Override
 //    @Autowired
-//    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userAuthService).passwordEncoder(passwordEncoder());
+//    protected void configureGlobal(AuthenticationManagerBuilder com.adminapp.auth) throws Exception {
+//        com.adminapp.auth.userDetailsService(userAuthService).passwordEncoder(passwordEncoder());
 //    }
 
     @Override
@@ -56,6 +60,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         auth.userDetailsService(userAuthService).passwordEncoder(passwordEncoder());
     }
+
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth
+//                // Definisemo uputstva AuthenticationManager-u:
+//
+//                // 1. koji servis da koristi da izvuce podatke o korisniku koji zeli da se autentifikuje
+//                // prilikom autentifikacije, AuthenticationManager ce sam pozivati loadUserByUsername() metodu ovog servisa
+//                .userDetailsService(userAuthService)
+//
+//                // 2. kroz koji enkoder da provuce lozinku koju je dobio od klijenta u zahtevu
+//                // da bi adekvatan hash koji dobije kao rezultat hash algoritma uporedio sa onim koji se nalazi u bazi (posto se u bazi ne cuva plain lozinka)
+//                .passwordEncoder(passwordEncoder());
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -74,16 +92,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                }).and();
 
         http.authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/users/**").permitAll()
-                .antMatchers("/api/article/**").permitAll()
-                .antMatchers("/api/menu/**").permitAll()
-                .antMatchers("/api/order/**").permitAll()
-                .antMatchers("/api/ingredient").permitAll()
-                .antMatchers("/api/privilegedUser/**").permitAll().and().httpBasic().and()
-//                .anyRequest().authenticated().and().formLogin().loginProcessingUrl("/api/auth/loging").and()
+                .antMatchers("/auth/**").permitAll()
+//                .antMatchers("/**").permitAll()
+//                .antMatchers("/auth/login").permitAll()
+                //.antMatchers("/api/privilegedUser/**").permitAll()
+                .and().httpBasic().and()
+//                .anyRequest().authenticated().and().formLogin().loginProcessingUrl("/api/com.adminapp.auth/loging").and()
 
-                .addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userAuthService), BasicAuthenticationFilter.class);
+                .addFilterAfter(new TokenAuthenticationFilter(tokenUtils, userAuthService), BasicAuthenticationFilter.class);
         http.cors().and().csrf().disable();
 
     }
