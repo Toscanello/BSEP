@@ -15,6 +15,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import com.adminapp.utils.TokenUtils;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -103,6 +108,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new TokenAuthenticationFilter(tokenUtils, userAuthService), BasicAuthenticationFilter.class);
         http.cors().and().csrf().disable();
 
+    }
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        //config.addAllowedOrigin("*");
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3001")); //if using different port add here
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
 }
