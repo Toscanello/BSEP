@@ -5,8 +5,13 @@ import UserModal from "../../modals/UserModal/UserModal";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { validSearch } from "../../reg/Regex";
+import createDOMPurify from "dompurify";
 
 const UsersPage = () => {
+
+  const DOMPurify=createDOMPurify(window)
+
   const [show, setShow] = useState(false);
 
   const [data, setData] = useState([]);
@@ -39,11 +44,15 @@ const UsersPage = () => {
       });
     }
     else{
-    axios
-      .get(`http://localhost:3000/users/search/${search}`)
-      .then((res) => {
-        setData(res.data);
-      });
+      if(validSearch.test(search)){
+        axios
+          .get(`http://localhost:3000/users/search/${search}`)
+          .then((res) => {
+            setData(res.data);
+          });
+      }
+      else
+        alert("invalid search")
     }
   }
 

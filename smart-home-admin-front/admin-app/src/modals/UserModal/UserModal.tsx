@@ -2,6 +2,7 @@ import "./UserModal.css";
 
 import React from "react";
 import axios from "axios";
+import { validName, validPassword, validUsername } from "../../reg/Regex";
 
 const UserModal = (props) => {
   var [name,setName] = React.useState("");
@@ -15,14 +16,20 @@ const UserModal = (props) => {
   }
 
   function handleSubmit(event){
-    axios.post(`http://localhost:3000/users/addNewUser`,
-    {
-      name:name,
-      surname:surname,
-      username: usernmae,
-      password: password,
-      role: role
-    }).then((res)=>alert("added User"))
+
+    if(validName.test(name) && validName.test(surname) && validUsername.test(usernmae) && 
+    validPassword.test(password)){
+      axios.post(`http://localhost:3000/users/addNewUser`,
+      {
+        name:name,
+        surname:surname,
+        username: usernmae,
+        password: password,
+        role: role
+      }).then((res)=>alert("added User"))
+  }
+  else
+    alert("Wrong input")
     event.preventDefault();
   }
 
