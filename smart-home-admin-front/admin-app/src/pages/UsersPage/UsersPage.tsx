@@ -11,6 +11,8 @@ const UsersPage = () => {
 
   const [data, setData] = useState([]);
 
+  var [search,setSearch]= useState("");
+
   useEffect(() => {
     axios.get(`http://localhost:3000/users/getAll`).then((res) => {
       setData(res.data);
@@ -29,6 +31,20 @@ const UsersPage = () => {
       .then((res) => {
         alert("deleted");
       });
+  }
+  function handleCliclkSearch() {
+    if(search === ""){
+      axios.get(`http://localhost:3000/users/getAll`).then((res) => {
+        setData(res.data);
+      });
+    }
+    else{
+    axios
+      .get(`http://localhost:3000/users/search/${search}`)
+      .then((res) => {
+        setData(res.data);
+      });
+    }
   }
 
   //   const displayData = data.map((info, key) => {
@@ -70,8 +86,8 @@ const UsersPage = () => {
         <h1>Users</h1>
         <div className="users-search">
           <div className="search">
-            <input type="text" placeholder="Username..." />
-            <button className="btn-src">Search</button>
+            <input type="text" placeholder="Username..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            <button className="btn-src" onClick={()=>handleCliclkSearch()}>Search</button>
           </div>
           <button className="btn" onClick={() => setShow(true)}>
             Create user

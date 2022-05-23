@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,5 +53,16 @@ public class UserService implements IUserService {
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> searchUsers(String query) {
+        List<User> users = userRepository.findAll();
+        String phrase = query.toLowerCase();
+        return users.stream()
+                .filter(u->u.getUsername().toLowerCase().contains(phrase)
+                        || u.getName().toLowerCase().contains(phrase)
+                        || u.getSurname().toLowerCase().contains(phrase)
+                ).collect(Collectors.toList());
     }
 }
