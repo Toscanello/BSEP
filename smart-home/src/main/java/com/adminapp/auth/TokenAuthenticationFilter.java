@@ -36,13 +36,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String identity;
         String authToken = tokenUtils.getToken(request);
+        String fingerprint = tokenUtils.getFingerprintFromCookie(request);
+
         if(authToken != null) {
             identity = tokenUtils.getIdentityFromToken(authToken);
             if(identity != null) {
                 UserDetails userDetails;
                 userDetails = userDetailsService.loadUserByUsername(identity);
 
-                if(tokenUtils.validateToken(authToken, userDetails)) {
+                if(tokenUtils.validateToken(authToken, userDetails, fingerprint)) {
                     TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
                     authentication.setToken(authToken);
                     SecurityContextHolder.getContext().setAuthentication(authentication);

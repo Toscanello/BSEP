@@ -2,6 +2,7 @@ package com.adminapp.controllers;
 
 import com.adminapp.dto.JwtAuthenticationRequest;
 import com.adminapp.dto.UserTokenState;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,8 +44,14 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        String fingerprint = tokenUtils.generateFingerprint();
+        String jwt = tokenUtils.generateToken(user.getUsername(), user.getAuthorities(), fingerprint);
+        // Create cookie
+        String cookie = "Fingerprint=" + fingerprint + "; HttpOnly; Path=/";
 
-        String jwt = tokenUtils.generateToken(user.getUsername(), user.getAuthorities());
-        return ResponseEntity.ok(new UserTokenState(jwt));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Set-Cookie", cookie);
+
+        return ResponseEntity.ok().headers(headers).body(new UserTokenState(jwt));
     }
 }
