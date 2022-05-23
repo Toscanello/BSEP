@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { validSearch } from "../../reg/Regex";
 import createDOMPurify from "dompurify";
+import { varToken } from "../../reg/Regex";
 
 const UsersPage = () => {
 
@@ -19,34 +20,54 @@ const UsersPage = () => {
   var [search,setSearch]= useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/users/getAll`).then((res) => {
+    axios.get(`http://localhost:3000/users/getAll`,{
+      headers: {
+        Authorization: 'Bearer ' + varToken
+      }
+    }).then((res) => {
       setData(res.data);
     });
   },[]);
 
   function handleClickEdit(info) {
-    axios.put(`http://localhost:3000/users/changeRole/${1}`,info).then((res) => {
+    axios.put(`http://localhost:3000/users/changeRole/${1}`,info,{
+      headers: {
+        Authorization: 'Bearer ' + varToken
+      }
+    }).then((res) => {
       alert("edited user");
     });
   }
 
   function handleClickDelete(username) {
     axios
-      .delete(`http://localhost:3000/users/delete/${username}`)
+      .delete(`http://localhost:3000/users/delete/${username}`,{
+        headers: {
+          Authorization: 'Bearer ' + varToken
+        }
+      })
       .then((res) => {
         alert("deleted");
       });
   }
   function handleCliclkSearch() {
     if(search === ""){
-      axios.get(`http://localhost:3000/users/getAll`).then((res) => {
+      axios.get(`http://localhost:3000/users/getAll`,{
+        headers: {
+          Authorization: 'Bearer ' + varToken
+        }
+      }).then((res) => {
         setData(res.data);
       });
     }
     else{
       if(validSearch.test(search)){
         axios
-          .get(`http://localhost:3000/users/search/${search}`)
+          .get(`http://localhost:3000/users/search/${search}`,{
+            headers: {
+              Authorization: 'Bearer ' + varToken
+            }
+          })
           .then((res) => {
             setData(res.data);
           });
