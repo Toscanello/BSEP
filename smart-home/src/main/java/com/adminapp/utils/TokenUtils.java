@@ -107,7 +107,7 @@ public class TokenUtils {
 
         // Validiranje fingerprint-a
         System.out.println("FGP ===> " + fingerprint);
-        boolean isAlgorithmValid = false;
+        boolean isAlgorithmValid = true;
         if (fingerprint != null) {
             isAlgorithmValid = SIGNATURE_ALGORITHM.getValue().equals(getAlgorithmFromToken(token));
         }
