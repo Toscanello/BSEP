@@ -21,4 +21,14 @@ public enum Role implements GrantedAuthority {
 
         return 0;
     }
+    public static Role getRoleFromInt(Integer num) {
+        switch (num) {
+            case 0:
+                return ROLE_ADMIN;
+            case 1:
+                return ROLE_USER;
+        }
+
+        return ROLE_ADMIN;
+    }
 }
