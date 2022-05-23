@@ -24,14 +24,18 @@ public class UserService implements IUserService {
 
     @Override
     public User addNewUser(User user) {
+
         return userRepository.save(user);
     }
 
     @Override
     public User changeRole(User user, Integer role) {
         User user1 = userRepository.findByUsername(user.getUsername()).orElse(null);
-        user1.setRole(Role.getRoleFromInt(role));
-        return userRepository.save(user1);
+        if(user1 != null) {
+            user1.setRole(Role.getRoleFromInt(role));
+            userRepository.save(user1);
+        }
+        return user1;
     }
 
     @Override

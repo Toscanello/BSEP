@@ -29,7 +29,7 @@ public class User extends BaseEntity implements UserDetails {
     private String surname;
 
     @Enumerated(EnumType.STRING)
-    @Column(insertable = false, updatable = false)
+    @Column
     private Role role;
 
     public User(){super();}

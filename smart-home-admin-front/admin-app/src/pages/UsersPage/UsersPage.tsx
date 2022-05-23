@@ -9,27 +9,27 @@ import { Link } from "react-router-dom";
 const UsersPage = () => {
   const [show, setShow] = useState(false);
 
-  //   const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
-  //   useEffect(() => {
-  //     axios.get(`http://localhost:3000/users/findAll`).then((res) => {
-  //       setData(res.data);
-  //     });
-  //   });
+  useEffect(() => {
+    axios.get(`http://localhost:3000/users/getAll`).then((res) => {
+      setData(res.data);
+    });
+  },[]);
 
-  //   function handleClickEdit(email) {
-  //     axios.get(`http://localhost:3000/users/edit/${email}`).then((res) => {
-  //       alert(res.data);
-  //     });
-  //   }
+  function handleClickEdit(info) {
+    axios.put(`http://localhost:3000/users/changeRole/${1}`,info).then((res) => {
+      alert("edited user");
+    });
+  }
 
-  //   function handleClickDelete(email) {
-  //     axios
-  //       .put(`http://localhost:3000/certificates/revoke/${email}`)
-  //       .then((res) => {
-  //         alert("revoked");
-  //       });
-  //   }
+  function handleClickDelete(username) {
+    axios
+      .delete(`http://localhost:3000/users/delete/${username}`)
+      .then((res) => {
+        alert("deleted");
+      });
+  }
 
   //   const displayData = data.map((info, key) => {
   //     return (
@@ -40,6 +40,25 @@ const UsersPage = () => {
   //       </tr>
   //     );
   //   });
+
+  const displayUsers = data.map((info,key)=>{
+
+    return (
+      <tr key = {key}>
+        <td>{info.name}</td>
+        <td>{info.surname}</td>
+        <td>{info.username}</td>
+        <td>{info.role}</td>
+        <td>
+          <button className="btn"onClick={()=>handleClickEdit(info)}>Edit</button>
+        </td>
+        <td>
+          <button className="btn" onClick={()=>handleClickDelete(info.username)}>Delete</button>
+        </td>
+      </tr>
+    );
+  });
+
 
   return (
     <div>
@@ -71,42 +90,7 @@ const UsersPage = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Uros</td>
-                <td>Petric</td>
-                <td>urkep</td>
-                <td>Admin</td>
-                <td align="center">
-                  <button>Edit</button>
-                </td>
-                <td align="center">
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>Uros</td>
-                <td>Petric</td>
-                <td>urkep</td>
-                <td>Admin</td>
-                <td align="center">
-                  <button>Edit</button>
-                </td>
-                <td align="center">
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>Uros</td>
-                <td>Petric</td>
-                <td>urkep</td>
-                <td>Admin</td>
-                <td align="center">
-                  <button>Edit</button>
-                </td>
-                <td align="center">
-                  <button>Delete</button>
-                </td>
-              </tr>
+              {displayUsers}
             </tbody>
           </table>
         </div>

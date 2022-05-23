@@ -1,12 +1,31 @@
 import "./UserModal.css";
 
 import React from "react";
+import axios from "axios";
 
 const UserModal = (props) => {
-  var ime = "Uros";
+  var [name,setName] = React.useState("");
+  var [surname,setSurname] = React.useState("");
+  var [usernmae,setUsername] = React.useState("");
+  var [password,setPassword] = React.useState("");
+  var [role,setRole]= React.useState("ROLE_ADMIN");
+
   if (!props.show) {
     return null;
   }
+
+  function handleSubmit(event){
+    axios.post(`http://localhost:3000/users/addNewUser`,
+    {
+      name:name,
+      surname:surname,
+      username: usernmae,
+      password: password,
+      role: role
+    }).then((res)=>alert("added User"))
+    event.preventDefault();
+  }
+
   return (
     <div className="modal" onClick={props.onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -17,14 +36,26 @@ const UserModal = (props) => {
           </button>
         </div>
         <div className="modal-body">
-          <form action="">
+          <form action="" onSubmit={handleSubmit}>
             <label htmlFor="fname">First Name</label>
-            <input type="text" id="fname" name="firstname" value={ime} />
+            <input type="text" id="fname" name="firstname" value={name} onChange={e=>setName(e.target.value)} />
 
             <label htmlFor="lname">Last Name</label>
-            <input type="text" id="lname" name="lastname" placeholder="" />
+            <input type="text" id="lname" name="lastname" value={surname} onChange={e=>setSurname(e.target.value)}/>
 
-            <input type="submit" value="Submit" />
+            <label htmlFor="uname">Username</label>
+            <input type="text" id="uname" name="username" value={usernmae} onChange={e=>setUsername(e.target.value)} />
+
+            <label htmlFor="pass">Password</label>
+            <input type="text" id="pass" name="password" value={password} onChange={e=>setPassword(e.target.value)} />
+
+            <label htmlFor="role">Role</label>
+            <select id="role" name="role" value={role} onChange={e=>setRole(e.currentTarget.value)}>
+              <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+              <option value="ROLE_USER">ROLE_USER</option>
+            </select>
+
+            <input type="submit" value="Submit"/>
           </form>
         </div>
         {/* <div className="modal-footer"></div> */}
