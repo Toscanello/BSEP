@@ -10,70 +10,72 @@ import createDOMPurify from "dompurify";
 import { varToken } from "../../reg/Regex";
 
 const UsersPage = () => {
-
-  const DOMPurify=createDOMPurify(window)
+  const DOMPurify = createDOMPurify(window);
 
   const [show, setShow] = useState(false);
 
   const [data, setData] = useState([]);
 
-  var [search,setSearch]= useState("");
+  var [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/users/getAll`,{
-      headers: {
-        Authorization: 'Bearer ' + varToken
-      }
-    }).then((res) => {
-      setData(res.data);
-    });
-  },[]);
+    axios
+      .get(`http://localhost:3000/users/getAll`, {
+        headers: {
+          Authorization: "Bearer " + varToken,
+        },
+      })
+      .then((res) => {
+        setData(res.data);
+      });
+  }, []);
 
   function handleClickEdit(info) {
-    axios.put(`http://localhost:3000/users/changeRole/${1}`,info,{
-      headers: {
-        Authorization: 'Bearer ' + varToken
-      }
-    }).then((res) => {
-      alert("edited user");
-    });
+    axios
+      .put(`http://localhost:3000/users/changeRole/${1}`, info, {
+        headers: {
+          Authorization: "Bearer " + varToken,
+        },
+      })
+      .then((res) => {
+        alert("edited user");
+      });
   }
 
   function handleClickDelete(username) {
     axios
-      .delete(`http://localhost:3000/users/delete/${username}`,{
+      .delete(`http://localhost:3000/users/delete/${username}`, {
         headers: {
-          Authorization: 'Bearer ' + varToken
-        }
+          Authorization: "Bearer " + varToken,
+        },
       })
       .then((res) => {
         alert("deleted");
       });
   }
   function handleCliclkSearch() {
-    if(search === ""){
-      axios.get(`http://localhost:3000/users/getAll`,{
-        headers: {
-          Authorization: 'Bearer ' + varToken
-        }
-      }).then((res) => {
-        setData(res.data);
-      });
-    }
-    else{
-      if(validSearch.test(search)){
+    if (search === "") {
+      axios
+        .get(`http://localhost:3000/users/getAll`, {
+          headers: {
+            Authorization: "Bearer " + varToken,
+          },
+        })
+        .then((res) => {
+          setData(res.data);
+        });
+    } else {
+      if (validSearch.test(search)) {
         axios
-          .get(`http://localhost:3000/users/search/${search}`,{
+          .get(`http://localhost:3000/users/search/${search}`, {
             headers: {
-              Authorization: 'Bearer ' + varToken
-            }
+              Authorization: "Bearer " + varToken,
+            },
           })
           .then((res) => {
             setData(res.data);
           });
-      }
-      else
-        alert("invalid search")
+      } else alert("invalid search");
     }
   }
 
@@ -87,24 +89,29 @@ const UsersPage = () => {
   //     );
   //   });
 
-  const displayUsers = data.map((info,key)=>{
-
+  const displayUsers = data.map((info, key) => {
     return (
-      <tr key = {key}>
+      <tr key={key}>
         <td>{info.name}</td>
         <td>{info.surname}</td>
         <td>{info.username}</td>
         <td>{info.role}</td>
         <td>
-          <button className="btn"onClick={()=>handleClickEdit(info)}>Edit</button>
+          <button className="btn" onClick={() => handleClickEdit(info)}>
+            Edit
+          </button>
         </td>
         <td>
-          <button className="btn" onClick={()=>handleClickDelete(info.username)}>Delete</button>
+          <button
+            className="btn"
+            onClick={() => handleClickDelete(info.username)}
+          >
+            Delete
+          </button>
         </td>
       </tr>
     );
   });
-
 
   return (
     <div>
@@ -116,8 +123,15 @@ const UsersPage = () => {
         <h1>Users</h1>
         <div className="users-search">
           <div className="search">
-            <input type="text" placeholder="Username..." value={search} onChange={e=>setSearch(e.target.value)}/>
-            <button className="btn-src" onClick={()=>handleCliclkSearch()}>Search</button>
+            <input
+              type="text"
+              placeholder="Username..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button className="btn-src" onClick={() => handleCliclkSearch()}>
+              Search
+            </button>
           </div>
           <button className="btn" onClick={() => setShow(true)}>
             Create user
@@ -135,9 +149,7 @@ const UsersPage = () => {
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-              {displayUsers}
-            </tbody>
+            <tbody>{displayUsers}</tbody>
           </table>
         </div>
       </div>

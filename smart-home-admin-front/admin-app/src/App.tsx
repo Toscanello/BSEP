@@ -8,12 +8,14 @@ import CsrPage from "./pages/Csr/CsrPage";
 import CreateCertificatePage from "./pages/CreateCertificatePage/CreateCertificatePage";
 import ViewCertificatesPage from "./pages/ViewCertificatesPage/ViewCertificatesPage";
 import UsersPage from "./pages/UsersPage/UsersPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/" component={LoginPage} />
+        <Route path="/home" component={HomePage} />
         <Route path="/csr" component={CsrPage} />
         <Route path="/create-certificate" component={CreateCertificatePage} />
         <Route path="/certificates" component={ViewCertificatesPage} />
