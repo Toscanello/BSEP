@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.*;
@@ -24,6 +25,7 @@ public class CertificateController {
     @Autowired
     public ICertificateService certificateService;
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PostMapping(path = "/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> issueCertificate(@RequestBody CertificateDTO certificateDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
         KeyPairGenerator keyPair= KeyPairGenerator.getInstance("RSA");
@@ -48,11 +50,13 @@ public class CertificateController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PostMapping("/create/{csrId}")
     public ResponseEntity<X509Certificate> createCertificate(@PathVariable Long csrId, @RequestBody IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
         return new ResponseEntity<>(certificateService.createCertificate(csrId, issuerDataDTO), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/revoke/{id}")
     public ResponseEntity<Boolean> revokeCertificate(@PathVariable("id") Long id){
         if(certificateService.revokeCertificate(id)) {
@@ -61,10 +65,14 @@ public class CertificateController {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/findAll")
     public ResponseEntity<List<X509Certificate>> findAllCertificates(){
         return new ResponseEntity<>(certificateService.getAllCertificates(),HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/validate/{alias}")
     public ResponseEntity<Boolean> validate(@PathVariable String alias){
         return new ResponseEntity<>(certificateService.validateCert(alias),HttpStatus.OK);

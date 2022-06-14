@@ -5,31 +5,77 @@ import UserModal from "../../modals/UserModal/UserModal";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { validSearch } from "../../reg/Regex";
+import createDOMPurify from "dompurify";
+import { varToken } from "../../reg/Regex";
 
 const UsersPage = () => {
+
+  const DOMPurify=createDOMPurify(window)
+
   const [show, setShow] = useState(false);
 
-  //   const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
-  //   useEffect(() => {
-  //     axios.get(`http://localhost:3000/users/findAll`).then((res) => {
-  //       setData(res.data);
-  //     });
-  //   });
+  var [search,setSearch]= useState("");
 
-  //   function handleClickEdit(email) {
-  //     axios.get(`http://localhost:3000/users/edit/${email}`).then((res) => {
-  //       alert(res.data);
-  //     });
-  //   }
+  useEffect(() => {
+    axios.get(`http://localhost:3000/users/getAll`,{
+      headers: {
+        Authorization: 'Bearer ' + varToken
+      }
+    }).then((res) => {
+      setData(res.data);
+    });
+  },[]);
 
-  //   function handleClickDelete(email) {
-  //     axios
-  //       .put(`http://localhost:3000/certificates/revoke/${email}`)
-  //       .then((res) => {
-  //         alert("revoked");
-  //       });
-  //   }
+  function handleClickEdit(info) {
+    axios.put(`http://localhost:3000/users/changeRole/${1}`,info,{
+      headers: {
+        Authorization: 'Bearer ' + varToken
+      }
+    }).then((res) => {
+      alert("edited user");
+    });
+  }
+
+  function handleClickDelete(username) {
+    axios
+      .delete(`http://localhost:3000/users/delete/${username}`,{
+        headers: {
+          Authorization: 'Bearer ' + varToken
+        }
+      })
+      .then((res) => {
+        alert("deleted");
+      });
+  }
+  function handleCliclkSearch() {
+    if(search === ""){
+      axios.get(`http://localhost:3000/users/getAll`,{
+        headers: {
+          Authorization: 'Bearer ' + varToken
+        }
+      }).then((res) => {
+        setData(res.data);
+      });
+    }
+    else{
+      if(validSearch.test(search)){
+        axios
+          .get(`http://localhost:3000/users/search/${search}`,{
+            headers: {
+              Authorization: 'Bearer ' + varToken
+            }
+          })
+          .then((res) => {
+            setData(res.data);
+          });
+      }
+      else
+        alert("invalid search")
+    }
+  }
 
   //   const displayData = data.map((info, key) => {
   //     return (
@@ -41,6 +87,25 @@ const UsersPage = () => {
   //     );
   //   });
 
+  const displayUsers = data.map((info,key)=>{
+
+    return (
+      <tr key = {key}>
+        <td>{info.name}</td>
+        <td>{info.surname}</td>
+        <td>{info.username}</td>
+        <td>{info.role}</td>
+        <td>
+          <button className="btn"onClick={()=>handleClickEdit(info)}>Edit</button>
+        </td>
+        <td>
+          <button className="btn" onClick={()=>handleClickDelete(info.username)}>Delete</button>
+        </td>
+      </tr>
+    );
+  });
+
+
   return (
     <div>
       <UserModal onClose={() => setShow(false)} show={show} />
@@ -51,8 +116,8 @@ const UsersPage = () => {
         <h1>Users</h1>
         <div className="users-search">
           <div className="search">
-            <input type="text" placeholder="Username..." />
-            <button className="btn-src">Search</button>
+            <input type="text" placeholder="Username..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            <button className="btn-src" onClick={()=>handleCliclkSearch()}>Search</button>
           </div>
           <button className="btn" onClick={() => setShow(true)}>
             Create user
@@ -71,42 +136,7 @@ const UsersPage = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Uros</td>
-                <td>Petric</td>
-                <td>urkep</td>
-                <td>Admin</td>
-                <td align="center">
-                  <button>Edit</button>
-                </td>
-                <td align="center">
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>Uros</td>
-                <td>Petric</td>
-                <td>urkep</td>
-                <td>Admin</td>
-                <td align="center">
-                  <button>Edit</button>
-                </td>
-                <td align="center">
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>Uros</td>
-                <td>Petric</td>
-                <td>urkep</td>
-                <td>Admin</td>
-                <td align="center">
-                  <button>Edit</button>
-                </td>
-                <td align="center">
-                  <button>Delete</button>
-                </td>
-              </tr>
+              {displayUsers}
             </tbody>
           </table>
         </div>
