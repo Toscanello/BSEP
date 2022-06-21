@@ -3,6 +3,7 @@ import "./CsrPage.css";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { varToken } from "../../reg/Regex";
 
 const CsrPage = () => {
   const [commonName, setCommonName] = useState("");
@@ -28,12 +29,16 @@ const CsrPage = () => {
 
     console.log(postBody);
 
-    axios.post(`http://localhost:3000/csr`, postBody);
+    axios.post(`http://localhost:3000/csr`, postBody,{
+      headers: {
+        Authorization: "Bearer " + varToken,
+      }
+    });
   };
 
   return (
     <div>
-      <Link to="/" className="btn btn-back">
+      <Link to="/home" className="btn btn-back">
         Home
       </Link>
       <h1 className="title">Create Certificate Request</h1>

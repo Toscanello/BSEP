@@ -2,8 +2,7 @@ import "./UserModal.css";
 
 import React from "react";
 import axios from "axios";
-import { validName, validPassword, validUsername } from "../../reg/Regex";
-
+import { validName, validPassword, validUsername, varToken } from "../../reg/Regex";
 const UserModal = (props) => {
   var [name,setName] = React.useState("");
   var [surname,setSurname] = React.useState("");
@@ -26,7 +25,12 @@ const UserModal = (props) => {
         username: usernmae,
         password: password,
         role: role
-      }).then((res)=>alert("added User"))
+      },{
+        headers: {
+          Authorization: "Bearer " + varToken,
+        }
+      })
+        .then((res)=>alert("added User"))
   }
   else
     alert("Wrong input")

@@ -3,23 +3,36 @@ import "./ViewCertificatesPage.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { varToken } from "../../reg/Regex";
 
 const ViewCertificatesPage = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/certificates/findAll`).then((res) => {
+    axios.get(`http://localhost:3000/certificates/findAll`,{
+      headers: {
+        Authorization: "Bearer " + varToken,
+      }
+    }).then((res) => {
       setData(res.data);
     });
   });
 
   function handleClickValidate(email){
-    axios.get(`http://localhost:3000/certificates/validate/${email}`).then((res)=>{
+    axios.get(`http://localhost:3000/certificates/validate/${email}`,{
+      headers: {
+        Authorization: "Bearer " + varToken,
+      }
+    }).then((res)=>{
       alert(res.data)
     })
   }
   function handleClickRevoke(serialNumber){
-    axios.put(`http://localhost:3000/certificates/revoke/${serialNumber}`).then((res)=>{
+    axios.put(`http://localhost:3000/certificates/revoke/${serialNumber}`,{
+      headers: {
+        Authorization: "Bearer " + varToken,
+      }
+    }).then((res)=>{
       alert('revoked')
     })
   }
@@ -51,7 +64,7 @@ const ViewCertificatesPage = () => {
 
   return (
     <div>
-      <Link to="/" className="btn btn-back">
+      <Link to="/home" className="btn btn-back">
         Home
       </Link>
       <h1 className="title">Certificates</h1>

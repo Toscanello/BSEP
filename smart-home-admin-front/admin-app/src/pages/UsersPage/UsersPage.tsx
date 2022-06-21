@@ -116,7 +116,7 @@ const UsersPage = () => {
   return (
     <div>
       <UserModal onClose={() => setShow(false)} show={show} />
-      <Link to="/" className="btn btn-back">
+      <Link to="/home" className="btn btn-back">
         Home
       </Link>
       <div className="container-users">

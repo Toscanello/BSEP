@@ -18,7 +18,9 @@ const LoginPage = () => {
 
     console.log(postBody);
 
-    axios.post(`http://localhost:3000/csr`, postBody);
+    axios.post(`http://localhost:3000/auth/login`, postBody)
+    .then(response=>console.log(response.data))
+    ;
   };
 
   return (

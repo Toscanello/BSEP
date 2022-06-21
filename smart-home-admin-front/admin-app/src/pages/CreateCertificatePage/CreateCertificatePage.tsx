@@ -3,6 +3,7 @@ import "./CreateCertificatePage.css";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { varToken } from "../../reg/Regex";
 
 const CreateCertificatePage = () => {
   const [serialNumber, setSerialNumber] = useState("");
@@ -34,12 +35,16 @@ const CreateCertificatePage = () => {
       email: email,
     };
 
-    axios.post(`http://localhost:3000/certificates/create/${csrId}`, postBody);
+    axios.post(`http://localhost:3000/certificates/create/${csrId}`, postBody,{
+      headers: {
+        Authorization: "Bearer " + varToken,
+      }
+    });
   };
 
   return (
     <div>
-      <Link to="/" className="btn btn-back">
+      <Link to="/home" className="btn btn-back">
         Home
       </Link>
       <h1 className="title">Create Certificate</h1>
