@@ -18,8 +18,16 @@ function App() {
     return <LoginPage setToken={setToken} />
   }
 
+  const logout = () => {
+    localStorage.removeItem('token');
+  }
+
   return (
+    
     <BrowserRouter>
+      <button className="btn button" onClick={logout}>
+        Logout
+      </button>
       <Switch>
         <Route exact path="/" component={LoginPage} />
         <Route path="/home" component={HomePage} />
