@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 import { BrowserRouter, Route, Switch } from "react-router-dom";
@@ -9,8 +9,15 @@ import CreateCertificatePage from "./pages/CreateCertificatePage/CreateCertifica
 import ViewCertificatesPage from "./pages/ViewCertificatesPage/ViewCertificatesPage";
 import UsersPage from "./pages/UsersPage/UsersPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import useToken from './components/useToken';
 
 function App() {
+  const { token, setToken } = useToken();
+
+  if(!token) {
+    return <LoginPage setToken={setToken} />
+  }
+
   return (
     <BrowserRouter>
       <Switch>
