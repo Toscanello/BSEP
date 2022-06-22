@@ -3,34 +3,35 @@ import "./ViewCertificatesPage.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { varToken } from "../../reg/Regex";
+import useToken from '../../components/useToken';
 
 const ViewCertificatesPage = () => {
   const [data, setData] = useState([]);
+  const {token} = useToken();
 
   useEffect(() => {
     axios.get(`http://localhost:3000/certificates/findAll`,{
       headers: {
-        Authorization: "Bearer " + varToken,
+        Authorization: "Bearer " + token,
       }
     }).then((res) => {
       setData(res.data);
     });
-  });
+  },[]);
 
   function handleClickValidate(email){
     axios.get(`http://localhost:3000/certificates/validate/${email}`,{
       headers: {
-        Authorization: "Bearer " + varToken,
+        Authorization: "Bearer " + token,
       }
     }).then((res)=>{
       alert(res.data)
     })
   }
   function handleClickRevoke(serialNumber){
-    axios.put(`http://localhost:3000/certificates/revoke/${serialNumber}`,{
+    axios.put(`http://localhost:3000/certificates/revoke/${serialNumber}`,{},{
       headers: {
-        Authorization: "Bearer " + varToken,
+        Authorization: "Bearer " + token,
       }
     }).then((res)=>{
       alert('revoked')
@@ -42,18 +43,18 @@ const ViewCertificatesPage = () => {
     return (
       <tr key={key}>
         <td></td>
-        <td>{info.subjectDN.commonName}</td>
-        <td>{info.issuerDN.organization}</td>
-        <td>{info.issuerDN.organizationalUnit}</td>
-        <td>{info.subjectDN.locality}</td>
-        <td>{info.subjectDN.state}</td>
-        <td>{info.subjectDN.country}</td>
-        <td>{info.subjectDN.name.split(',')[0].substring(13)}</td>
+        <td>{info.commonName}</td>
+        <td>{info.organization}</td>
+        <td>{info.organizationUnit}</td>
+        <td>{info.locality}</td>
+        <td>{info.state}</td>
+        <td>{info.country}</td>
+        <td>{info.name}</td>
         <td>{info.serialNumber}</td>
         <td>{info.notBefore.split('T')[0]}</td>
         <td>{info.notAfter.split('T')[0]}</td>
         <td>
-          <button className="btn" onClick={()=>handleClickValidate(info.subjectDN.name.split(',')[0].substring(13))}>Validate</button>
+          <button className="btn" onClick={()=>handleClickValidate(info.name)}>Validate</button>
         </td>
         <td>
           <button className="btn" onClick={()=>handleClickRevoke(info.serialNumber)}>Revoke</button>

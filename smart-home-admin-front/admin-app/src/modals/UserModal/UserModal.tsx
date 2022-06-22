@@ -2,13 +2,16 @@ import "./UserModal.css";
 
 import React from "react";
 import axios from "axios";
-import { validName, validPassword, validUsername, varToken } from "../../reg/Regex";
+import { validName, validPassword, validUsername } from "../../reg/Regex";
+import useToken from '../../components/useToken';
+
 const UserModal = (props) => {
   var [name,setName] = React.useState("");
   var [surname,setSurname] = React.useState("");
   var [usernmae,setUsername] = React.useState("");
   var [password,setPassword] = React.useState("");
   var [role,setRole]= React.useState("ROLE_ADMIN");
+  const {token} = useToken();
 
   if (!props.show) {
     return null;
@@ -27,7 +30,7 @@ const UserModal = (props) => {
         role: role
       },{
         headers: {
-          Authorization: "Bearer " + varToken,
+          Authorization: "Bearer " + token,
         }
       })
         .then((res)=>alert("added User"))

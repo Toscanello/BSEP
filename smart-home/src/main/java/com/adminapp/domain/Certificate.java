@@ -26,6 +26,21 @@ public class Certificate implements Serializable {
     @Column(name="common_name")
     private String commonName;
 
+    @Column(name="organization")
+    private String organization;
+
+    @Column(name="organization_unit")
+    private String organizationUnit;
+
+    @Column(name="locality")
+    private String locality;
+
+    @Column(name="state")
+    private String state;
+
+    @Column(name="country")
+    private String country;
+
     @Column(name="alias")
     private String alias;
 

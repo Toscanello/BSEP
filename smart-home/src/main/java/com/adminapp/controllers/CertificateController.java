@@ -52,7 +52,7 @@ public class CertificateController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PostMapping("/create/{csrId}")
-    public ResponseEntity<X509Certificate> createCertificate(@PathVariable Long csrId, @RequestBody IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
+    public ResponseEntity<CertificateDTO> createCertificate(@PathVariable Long csrId, @RequestBody IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
         return new ResponseEntity<>(certificateService.createCertificate(csrId, issuerDataDTO), HttpStatus.OK);
     }
 
@@ -68,7 +68,7 @@ public class CertificateController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/findAll")
-    public ResponseEntity<List<X509Certificate>> findAllCertificates(){
+    public ResponseEntity<List<CertificateDTO>> findAllCertificates(){
         return new ResponseEntity<>(certificateService.getAllCertificates(),HttpStatus.OK);
     }
 

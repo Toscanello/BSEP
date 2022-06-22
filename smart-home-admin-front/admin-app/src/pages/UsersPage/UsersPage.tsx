@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { validSearch } from "../../reg/Regex";
 import createDOMPurify from "dompurify";
-import { varToken } from "../../reg/Regex";
+import useToken from '../../components/useToken';
 
 const UsersPage = () => {
   const DOMPurify = createDOMPurify(window);
@@ -17,12 +17,13 @@ const UsersPage = () => {
   const [data, setData] = useState([]);
 
   var [search, setSearch] = useState("");
+  const {token} = useToken();
 
   useEffect(() => {
     axios
       .get(`http://localhost:3000/users/getAll`, {
         headers: {
-          Authorization: "Bearer " + varToken,
+          Authorization: "Bearer " + token,
         },
       })
       .then((res) => {
@@ -34,7 +35,7 @@ const UsersPage = () => {
     axios
       .put(`http://localhost:3000/users/changeRole/${1}`, info, {
         headers: {
-          Authorization: "Bearer " + varToken,
+          Authorization: "Bearer " + token,
         },
       })
       .then((res) => {
@@ -46,7 +47,7 @@ const UsersPage = () => {
     axios
       .delete(`http://localhost:3000/users/delete/${username}`, {
         headers: {
-          Authorization: "Bearer " + varToken,
+          Authorization: "Bearer " + token,
         },
       })
       .then((res) => {
@@ -58,7 +59,7 @@ const UsersPage = () => {
       axios
         .get(`http://localhost:3000/users/getAll`, {
           headers: {
-            Authorization: "Bearer " + varToken,
+            Authorization: "Bearer " + token,
           },
         })
         .then((res) => {
@@ -69,7 +70,7 @@ const UsersPage = () => {
         axios
           .get(`http://localhost:3000/users/search/${search}`, {
             headers: {
-              Authorization: "Bearer " + varToken,
+              Authorization: "Bearer " + token,
             },
           })
           .then((res) => {

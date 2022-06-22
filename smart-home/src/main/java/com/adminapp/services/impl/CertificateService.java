@@ -6,6 +6,7 @@ import com.adminapp.crypto.pki.data.SubjectData;
 import com.adminapp.crypto.pki.keystores.KeyStoreReader;
 import com.adminapp.crypto.pki.keystores.KeyStoreWriter;
 import com.adminapp.domain.Certificate;
+import com.adminapp.dto.CertificateDTO;
 import com.adminapp.dto.RootDTO;
 import com.adminapp.models.Csr;
 import com.adminapp.models.dto.IssuerDataDTO;
@@ -27,6 +28,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,7 +40,7 @@ public class CertificateService implements ICertificateService {
     private final CertificateRepository certificateRepository;
 
     @Override
-    public X509Certificate issueCertificate(SubjectData subjectData, IssuerData issuerData) {
+    public CertificateDTO issueCertificate(SubjectData subjectData, IssuerData issuerData) {
         X509Certificate certificate = CertificateGenerator.generateCertificate(subjectData, issuerData);
         System.out.println(certificate.toString());
         KeyStoreWriter writer = new KeyStoreWriter();
@@ -47,7 +49,22 @@ public class CertificateService implements ICertificateService {
                 issuerData.getPrivateKey(),"password".toCharArray(),certificate);
         writer.saveKeyStore("keystore.jks","password".toCharArray());
 
-        return certificate;
+
+
+        String commonName= String.valueOf(subjectData.getX500name().getRDNs()[0].getFirst().getValue());
+        String organization = String.valueOf(subjectData.getX500name().getRDNs()[1].getFirst().getValue());
+        String organizationUnit = String.valueOf(subjectData.getX500name().getRDNs()[2].getFirst().getValue());
+        String locality = String.valueOf(subjectData.getX500name().getRDNs()[3].getFirst().getValue());
+        String state = String.valueOf(subjectData.getX500name().getRDNs()[4].getFirst().getValue());
+        String country = String.valueOf(subjectData.getX500name().getRDNs()[5].getFirst().getValue());
+        String name = String.valueOf(subjectData.getX500name().getRDNs()[6].getFirst().getValue());
+        Long serialNumber= Long.valueOf(subjectData.getSerialNumber());
+        Date notBefore =  subjectData.getStartDate();
+        Date notAfter = subjectData.getEndDate();
+
+        CertificateDTO certificateDTO = new CertificateDTO(commonName,organization,organizationUnit,locality,state,country,name,serialNumber,notBefore,notAfter);
+
+        return certificateDTO;
     }
 
     @Override
@@ -56,7 +73,7 @@ public class CertificateService implements ICertificateService {
     }
 
     @Override
-    public X509Certificate createCertificate(Long csrId, IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
+    public CertificateDTO createCertificate(Long csrId, IssuerDataDTO issuerDataDTO) throws NoSuchAlgorithmException, NoSuchProviderException {
         Csr csr = csrService.get(csrId);
 
         KeyPairGenerator keyPair= KeyPairGenerator.getInstance("RSA");
@@ -87,8 +104,13 @@ public class CertificateService implements ICertificateService {
         Certificate certificate = new Certificate();
         certificate.setSerialNumber(Long.parseLong(issuerDataDTO.getSerialNumber()));
         certificate.setAlias(csr.getEmail());
+        certificate.setOrganization(csr.getOrganizationName());
+        certificate.setOrganizationUnit(csr.getOrganizationUnit());
+        certificate.setLocality(csr.getCity());
+        certificate.setState(csr.getState());
+        certificate.setCountry(csr.getCountry());
         certificate.setRevoked(false);
-        certificate.setCommonName(issuerDataDTO.getCommonName());
+        certificate.setCommonName(csr.getCommonName());
         certificate.setDateUntil(issuerDataDTO.getEndDate());
         certificate.setDateFrom(issuerDataDTO.getStartDate());
         certificate.setIsCA(false);
@@ -140,13 +162,12 @@ public class CertificateService implements ICertificateService {
         certificatesOfIssuer.forEach(e -> revokeCertificate(e.getSerialNumber()));
     }
 
-    public ArrayList<X509Certificate> getAllCertificates(){
+    public ArrayList<CertificateDTO> getAllCertificates(){
          ArrayList<Certificate> certificates = (ArrayList<Certificate>) certificateRepository.findAll();
-         ArrayList<X509Certificate> certificatesToReturn = new ArrayList<>();
-        KeyStoreReader keyStoreReader = new KeyStoreReader();
+         ArrayList<CertificateDTO> certificatesToReturn = new ArrayList<>();
          for(Certificate c: certificates)
-             if(!c.getRevoked())
-                certificatesToReturn.add((X509Certificate) keyStoreReader.readCertificate("keystore.jks","password",c.getAlias()));
+             if (!c.getRevoked())
+                 certificatesToReturn.add(new CertificateDTO(c));
          return certificatesToReturn;
     }
 
