@@ -11,7 +11,7 @@ const LoginPage = ({ setToken }) => {
 
   const loginUser = (credentials) => {
     return axios
-      .post(`http://localhost:3000/auth/login`, credentials)
+      .post(`https://localhost:3000/auth/login`, credentials)
       .then((res) => res.data.accessToken)
       .catch((err) => alert("Wrong login or username"));
   };

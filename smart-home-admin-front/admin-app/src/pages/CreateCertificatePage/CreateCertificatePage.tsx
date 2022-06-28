@@ -3,7 +3,7 @@ import "./CreateCertificatePage.css";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import useToken from '../../components/useToken';
+import useToken from "../../components/useToken";
 
 const CreateCertificatePage = () => {
   const [serialNumber, setSerialNumber] = useState("");
@@ -18,7 +18,7 @@ const CreateCertificatePage = () => {
   const [email, setEmail] = useState("");
 
   const [csrId, setCsrId] = useState("");
-  const {token} = useToken();
+  const { token } = useToken();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -37,11 +37,15 @@ const CreateCertificatePage = () => {
     };
 
     console.log(postBody);
-    axios.post(`http://localhost:3000/certificates/create/${csrId}`, postBody,{
-      headers: {
-        Authorization: "Bearer " + token,
+    axios.post(
+      `https://localhost:3000/certificates/create/${csrId}`,
+      postBody,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
       }
-    });
+    );
   };
 
   return (

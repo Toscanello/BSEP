@@ -3,7 +3,7 @@ import "./CsrPage.css";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import useToken from '../../components/useToken';
+import useToken from "../../components/useToken";
 
 const CsrPage = () => {
   const [commonName, setCommonName] = useState("");
@@ -13,7 +13,7 @@ const CsrPage = () => {
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
   const [email, setEmail] = useState("");
-  const {token} = useToken();
+  const { token } = useToken();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -30,10 +30,10 @@ const CsrPage = () => {
 
     console.log(postBody);
     console.log(token);
-    axios.post(`http://localhost:3000/csr`, postBody,{
+    axios.post(`https://localhost:3000/csr`, postBody, {
       headers: {
         Authorization: "Bearer " + token,
-      }
+      },
     });
   };
 

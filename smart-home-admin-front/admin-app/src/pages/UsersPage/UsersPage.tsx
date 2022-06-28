@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { validSearch } from "../../reg/Regex";
 import createDOMPurify from "dompurify";
-import useToken from '../../components/useToken';
+import useToken from "../../components/useToken";
 
 const UsersPage = () => {
   const DOMPurify = createDOMPurify(window);
@@ -17,11 +17,11 @@ const UsersPage = () => {
   const [data, setData] = useState([]);
 
   var [search, setSearch] = useState("");
-  const {token} = useToken();
+  const { token } = useToken();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/users/getAll`, {
+      .get(`https://localhost:3000/users/getAll`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -33,7 +33,7 @@ const UsersPage = () => {
 
   function handleClickEdit(info) {
     axios
-      .put(`http://localhost:3000/users/changeRole/${1}`, info, {
+      .put(`https://localhost:3000/users/changeRole/${1}`, info, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -45,7 +45,7 @@ const UsersPage = () => {
 
   function handleClickDelete(username) {
     axios
-      .delete(`http://localhost:3000/users/delete/${username}`, {
+      .delete(`https://localhost:3000/users/delete/${username}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -57,7 +57,7 @@ const UsersPage = () => {
   function handleCliclkSearch() {
     if (search === "") {
       axios
-        .get(`http://localhost:3000/users/getAll`, {
+        .get(`https://localhost:3000/users/getAll`, {
           headers: {
             Authorization: "Bearer " + token,
           },
@@ -68,7 +68,7 @@ const UsersPage = () => {
     } else {
       if (validSearch.test(search)) {
         axios
-          .get(`http://localhost:3000/users/search/${search}`, {
+          .get(`https://localhost:3000/users/search/${search}`, {
             headers: {
               Authorization: "Bearer " + token,
             },
